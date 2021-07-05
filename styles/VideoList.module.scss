@@ -1,0 +1,30 @@
+.category {
+  width: 100%;
+  margin: 0 0 20px 0;
+  padding: 0 0 0 30px;
+  height: 250px;
+
+  p {
+    font-weight: bold;
+    margin: 0 0 10px;
+  }
+}
+
+.videoList {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+
+  .video {
+    margin: 0 5px 5px 0;
+    cursor: pointer;
+    flex-shrink: 0;
+
+    img {
+      border-radius: 3px;
+      width: 320px;
+      height: 180px;
+      object-fit: cover;
+    }
+  }
+}

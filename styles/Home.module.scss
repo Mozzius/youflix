@@ -1,0 +1,30 @@
+@use 'theme.scss';
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.nav {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+
+  h1 {
+    color: theme.$red;
+    margin: 0;
+  }
+
+  img {
+    height: 50px;
+    width: 50px;
+    cursor: pointer;
+  }
+}
