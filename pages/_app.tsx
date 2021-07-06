@@ -23,7 +23,7 @@ export default function App({ Component, pageProps }: CustomAppProps) {
 function Auth({ children }) {
   const [session, loading] = useSession();
   const isUser = !!session?.user;
-  
+
   useEffect(() => {
     if (loading) return;
     if (!isUser) signIn("google");

@@ -1,0 +1,42 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  width: calc(33.3333333% - 14px);
+  cursor: pointer;
+  border-radius: 6px;
+  overflow: hidden;
+
+  @media (max-width: 700px) {
+    width: calc(50% - 10px);
+  }
+
+  @media (max-width: 400px) {
+    width: calc(100%);
+  }
+
+  .image {
+    width: 100%;
+    padding-top: 56.25%;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .info {
+    width: 100%;
+    background-color: #222;
+    padding: 10px 15px;
+    flex-grow: 1;
+
+    .title {
+      margin: 0;
+    }
+
+    .channel {
+      margin: 3px 0 0 0;
+      color: #888;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+  }
+}

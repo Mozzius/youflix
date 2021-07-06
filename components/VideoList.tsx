@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
+import Image from "next/image";
 import { VideoType } from "../pages";
 import styles from "../styles/VideoList.module.scss";
+import useApi from "../lib/useApi";
 
 export interface VideoListProps {
   category: {
@@ -14,16 +15,12 @@ export interface VideoListProps {
 }
 
 const VideoList: React.FC<VideoListProps> = ({ category, setVideo }) => {
-  const [videos, setVideos] = useState([]);
   const [ref, inView] = useInView();
-
-  useEffect(() => {
-    if (inView) {
-      fetch(`/api/videos/${category.id}`)
-        .then((res) => res.json())
-        .then((x) => setVideos(x));
-    }
-  }, [inView, category.id]);
+  const videos = useApi("videos", {
+    path: category.id,
+    predicate: inView,
+    initialValue: [],
+  });
 
   return (
     <div ref={ref} className={styles.category}>
@@ -45,12 +42,16 @@ const VideoList: React.FC<VideoListProps> = ({ category, setVideo }) => {
                     title: snippet.channelTitle,
                   },
                   thumbnail:
-                    snippet.thumbnails?.maxres?.url ??
-                    snippet.thumbnails.high.url,
+                    snippet.thumbnails.maxres ?? snippet.thumbnails.high,
                 })
               }
             >
-              <img src={snippet.thumbnails.high.url} alt={snippet.title} />
+              <Image
+                src={snippet.thumbnails.high.url}
+                alt={snippet.title}
+                width={snippet.thumbnails.high.width}
+                height={snippet.thumbnails.high.height}
+              />
             </div>
           );
         })}

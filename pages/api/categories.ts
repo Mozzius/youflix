@@ -16,9 +16,11 @@ export default async function handler(
   const token = await getToken({ req, secret });
 
   const params = new URLSearchParams(options);
-  const data = await fetchApi(`videoCategories?${params.toString()}`, token.accessToken);
+  const { success, data, status } = await fetchApi(
+    `videoCategories?${params.toString()}`,
+    token.accessToken
+  );
 
-  res
-    .status(200)
-    .json(data.items);
+  if (success) res.status(200).json(data.items);
+  else res.status(status).json({});
 }

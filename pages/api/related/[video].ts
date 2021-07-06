@@ -6,9 +6,9 @@ const secret = process.env.NEXTAUTH_SECRET;
 
 const options = {
   part: "snippet",
-  chart: "mostPopular",
+  type: "video",
   regionCode: "GB",
-  maxResults: "20",
+  maxResults: "12",
 };
 
 export default async function handler(
@@ -17,10 +17,10 @@ export default async function handler(
 ) {
   const token = await getToken({ req, secret });
 
-  const { id } = req.query as { id: string };
-  const params = new URLSearchParams({ ...options, videoCategoryId: id });
+  const { video } = req.query as { video: string };
+  const params = new URLSearchParams({ ...options, relatedToVideoId: video });
   const { success, status, data } = await fetchApi(
-    `videos?${params.toString()}`,
+    `search?${params.toString()}`,
     token.accessToken
   );
 

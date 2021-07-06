@@ -116,11 +116,47 @@
     }
 
     .description {
-      padding: 20px 0;
+      margin-top: 20px;
+      overflow: hidden;
+      position: relative;
 
       p {
         margin: 3px 0;
       }
+
+      .fade {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background: rgb(20, 20, 20);
+        background: linear-gradient(
+          0deg,
+          rgba(20, 20, 20, 1) 0%,
+          rgba(20, 20, 20, 0.8) 10%,
+          rgba(0, 0, 0, 0) 100%
+        );
+      }
     }
+
+    .readMore {
+      font-weight: bold;
+      color: #ccc;
+      cursor: pointer;
+      font-size: 14px;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .related {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 20px 0;
+    gap: 20px;
   }
 }

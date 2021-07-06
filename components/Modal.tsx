@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { animated, useSpring } from "@react-spring/web";
 import { VideoType } from "../pages";
 import styles from "../styles/Modal.module.scss";
+import useApi from "../lib/useApi";
+import Description from "./Description";
+import RelatedVideo from "./RelatedVideo";
 
 export interface ModalProps {
   show: boolean;
@@ -11,6 +14,13 @@ export interface ModalProps {
 
 const Modal: React.FC<ModalProps> = ({ show, video: videoProp, onClose }) => {
   const [video, setVideo] = useState(videoProp);
+  console.log(video?.id, !!video);
+  const related = useApi("related", {
+    path: video?.id,
+    predicate: !!video,
+    purge: true,
+    initialValue: [],
+  });
   const bgProps = useSpring({
     opacity: show ? 1 : 0,
   });
@@ -19,10 +29,12 @@ const Modal: React.FC<ModalProps> = ({ show, video: videoProp, onClose }) => {
     scale: show ? 1 : 0.8,
   });
 
+  // cache video prop, so content doesn't disappear when closing
   useEffect(() => {
     if (videoProp) {
       setVideo(videoProp);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoProp?.id]);
 
   if (!video) return null;
@@ -44,7 +56,7 @@ const Modal: React.FC<ModalProps> = ({ show, video: videoProp, onClose }) => {
         <div className={styles.backgroundImage}>
           <div
             className={styles.image}
-            style={{ backgroundImage: `url("${video.thumbnail}")` }}
+            style={{ backgroundImage: `url("${video.thumbnail.url}")` }}
           />
           <div className={styles.fade} />
         </div>
@@ -57,10 +69,35 @@ const Modal: React.FC<ModalProps> = ({ show, video: videoProp, onClose }) => {
           <a href={`https://youtube.com/embed/${video.id}`}>
             <span>▸</span>Play
           </a>
-          <div className={styles.description}>
-            {video.description
-              .split("\n")
-              .map((x) => (x === "" ? <br key={Math.random()}/> : <p key={Math.random()}>{x}</p>))}
+          <Description content={video.description} />
+          <div className={styles.related}>
+            {related.slice(0, 6).map((vid) => {
+              if (vid.snippet) {
+                const transformed: VideoType = {
+                  id: vid.id.videoId,
+                  title: vid.snippet.title,
+                  channel: vid.snippet.channelTitle,
+                  description: vid.snippet.description,
+                  thumbnail: vid.snippet.thumbnails.high,
+                };
+                return (
+                  <RelatedVideo
+                    key={vid.id.videoId}
+                    video={transformed}
+                    setActiveVideo={() =>
+                      setVideo({
+                        ...transformed,
+                        thumbnail:
+                          vid.snippet.thumbnails.maxres ??
+                          vid.snippet.thumbnails.high,
+                      })
+                    }
+                  />
+                );
+              } else {
+                return null;
+              }
+            })}
           </div>
         </div>
       </animated.div>
