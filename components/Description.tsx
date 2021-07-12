@@ -21,8 +21,6 @@ const Description: React.FC<DescriptionProps> = ({ content }) => {
     }
   }, [expanded, height]);
 
-  console.log(expanded, needsExpanding, height);
-
   return (
     <>
       <div

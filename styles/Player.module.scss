@@ -1,0 +1,124 @@
+@use "theme.scss";
+
+.container {
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  z-index: 100;
+}
+
+.shown {
+  pointer-events: auto;
+}
+
+.hidden {
+  pointer-events: none;
+}
+
+.ui {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  // opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 150;
+
+  // &:hover {
+  //   opacity: 1;
+  // }
+
+  .title {
+    font-size: 20px;
+    margin: 20px 60px 0 15px;
+  }
+
+  .playPause {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    position: absolute;
+    bottom: 20px;
+    left: 15px;
+    color: white;
+    background: none;
+    border: 2px solid transparent;
+    transition: border-color 0.2s ease;
+    cursor: pointer;
+
+    &:hover {
+      border-color: white;
+    }
+
+    span {
+      color: white;
+      margin: 0;
+      position: absolute;
+      top: -5.5px;
+      left: 3.5px;
+      font-size: 30px;
+    }
+  }
+
+  .progressBar {
+    width: calc(100% - 30px);
+    margin: 0 15px;
+    position: absolute;
+    left: 0;
+    bottom: 75px;
+    background-color: #ccc;
+    height: 5px;
+
+    & div {
+      height: 100%;
+      background-color: theme.$red;
+      width: 0;
+      transition: width 0.05s ease;
+    }
+  }
+
+  .duration {
+    position: absolute;
+    bottom: 25px;
+    left: 50px;
+  }
+
+  .close {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    background: none;
+    cursor: pointer;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 50;
+    border: 2px solid transparent;
+    transition: border-color 0.2s ease;
+
+    &:hover {
+      border-color: white;
+    }
+
+    div {
+      color: white;
+      margin: 0;
+      transform: rotate(45deg);
+      position: absolute;
+      top: -19.5px;
+      left: 6.5px;
+      font-size: 50px;
+      font-weight: 100;
+    }
+  }
+}
+
+.player {
+  width: 100%;
+  height: 150%;
+  position: relative;
+  top: -25%;
+}

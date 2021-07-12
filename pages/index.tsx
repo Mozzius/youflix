@@ -5,6 +5,7 @@ import VideoList from "../components/VideoList";
 import styles from "../styles/Home.module.scss";
 import Modal from "../components/Modal";
 import useApi from "../lib/useApi";
+import Player from "../components/Player";
 
 export async function getServerSideProps(ctx) {
   return {
@@ -43,7 +44,7 @@ export default function Home() {
   }, [activeVideo]);
 
   return (
-    <>
+    <Player>
       <nav className={styles.nav}>
         <h1>youflix</h1>
         <Image
@@ -64,6 +65,6 @@ export default function Home() {
           />
         ))}
       <Modal show={activeVideo} video={video} onClose={() => setVideo(null)} />
-    </>
+    </Player>
   );
 }

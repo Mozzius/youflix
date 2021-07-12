@@ -5,6 +5,7 @@ import styles from "../styles/Modal.module.scss";
 import useApi from "../lib/useApi";
 import Description from "./Description";
 import RelatedVideo from "./RelatedVideo";
+import { usePlayer } from "./Player";
 
 export interface ModalProps {
   show: boolean;
@@ -14,7 +15,7 @@ export interface ModalProps {
 
 const Modal: React.FC<ModalProps> = ({ show, video: videoProp, onClose }) => {
   const [video, setVideo] = useState(videoProp);
-  console.log(video?.id, !!video);
+  const play = usePlayer();
   const related = useApi("related", {
     path: video?.id,
     predicate: !!video,
@@ -60,15 +61,15 @@ const Modal: React.FC<ModalProps> = ({ show, video: videoProp, onClose }) => {
           />
           <div className={styles.fade} />
         </div>
-        <div className={styles.close} onClick={onClose}>
-          <span>+</span>
-        </div>
+        <button className={styles.close} onClick={onClose}>
+          <div>+</div>
+        </button>
         <div className={styles.content}>
           <div className={styles.fill} />
           <h1>{video.title}</h1>
-          <a href={`https://youtube.com/embed/${video.id}`}>
+          <button onClick={() => play(video.id, video.title)}>
             <span>▸</span>Play
-          </a>
+          </button>
           <Description content={video.description} />
           <div className={styles.related}>
             {related.slice(0, 6).map((vid) => {

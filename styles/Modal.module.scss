@@ -62,8 +62,11 @@
     top: 15px;
     right: 15px;
     z-index: 50;
+    border: none;
 
-    span {
+    div {
+      display: inline;
+      color: white;
       margin: 0;
       transform: rotate(45deg);
       position: absolute;
@@ -94,9 +97,9 @@
       max-width: 80%;
     }
 
-    a {
+    button {
       background-color: white;
-      color: black;
+      color: theme.$black;
       display: block;
       font-weight: 16px;
       border: none;
@@ -110,7 +113,7 @@
       span {
         font-size: 35px;
         position: absolute;
-        top: -7px;
+        top: -9px;
         left: 3px;
       }
     }
