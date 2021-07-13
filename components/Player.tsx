@@ -1,5 +1,5 @@
 import { useSpring, animated } from "@react-spring/web";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import YouTube from "react-youtube";
 
 import useYoutubePlayer from "../lib/useYoutubePlayer";
@@ -12,7 +12,11 @@ const PlayerContext = createContext<(id: string, title: string) => void>(
 const Player: React.FC = ({ children }) => {
   const [show, setShow] = useState<boolean>(false);
   const [[id, title], setId] = useState<[string, string]>(["", ""]);
-  const [playerRef, { play, pause, time, duration }] = useYoutubePlayer(id);
+  const [time, setTime] = useState<number>(0);
+  const [duration, setDuration] = useState<number>(0);
+  const timeoutRef = useRef<number | undefined>();
+  const intervalRef = useRef<number | undefined>();
+  const [ref, { play, pause }] = useYoutubePlayer(id);
   const [playing, setPlaying] = useState<boolean>(false);
   const props = useSpring({
     opacity: show ? 1 : 0,
@@ -30,6 +34,34 @@ const Player: React.FC = ({ children }) => {
       pause();
     }
   }, [pause, play, playing]);
+
+  useEffect(
+    () => () => {
+      clearInterval(intervalRef.current);
+      clearTimeout(timeoutRef.current);
+    },
+    []
+  );
+
+  const onPlayerReady = (event) => {
+    const player = event.target;
+    // duration and time are not available until metadata is loaded,
+    // which is after the video starts
+    function pollUntilMetadata() {
+      const duration = player.getDuration();
+      console.log(duration);
+      if (!duration) {
+        timeoutRef.current = window.setTimeout(pollUntilMetadata, 10);
+      } else {
+        setDuration(duration);
+        intervalRef.current = window.setInterval(
+          () => setTime(player.getCurrentTime()),
+          100
+        );
+      }
+    }
+    pollUntilMetadata();
+  };
 
   return (
     <PlayerContext.Provider
@@ -54,20 +86,27 @@ const Player: React.FC = ({ children }) => {
             <div>+</div>
           </button>
           <div className={styles.progressBar}>
-            <div style={{ width: `${(duration / time) * 100}%` }} />
+            <div style={{ width: `${(time / duration) * 100}%` }} />
           </div>
           <button className={styles.playPause}>
             <span>{playing ? "\u23F8\uFE0E" : "\u23F5\uFE0E"}</span>
           </button>
-          <div className={styles.duration}>
-            {Math.floor(time / 60)}:{Math.floor(time % 60)} /{" "}
-            {Math.floor(duration / 60)}:{Math.floor(duration % 60)}
-          </div>
+          {!!time && !!duration && (
+            <div className={styles.duration}>
+              {Math.floor(time / 60)}:{Math.floor(time % 60)} /{" "}
+              {Math.floor(duration / 60)}:{Math.floor(duration % 60)}
+            </div>
+          )}
         </div>
         <YouTube
-          ref={playerRef}
+          ref={ref}
           videoId={id}
           containerClassName={styles.player}
+          onPlay={() => setPlaying(true)}
+          onPause={() => setPlaying(false)}
+          onEnd={() => setShow(false)}
+          onError={() => setShow(false)}
+          onReady={onPlayerReady}
           opts={{
             height: "100%",
             width: "100%",
@@ -81,10 +120,6 @@ const Player: React.FC = ({ children }) => {
               showinfo: 0,
             },
           }}
-          onPlay={() => setPlaying(true)}
-          onPause={() => setPlaying(false)}
-          onEnd={() => setShow(false)}
-          onError={() => setShow(false)}
         />
       </animated.div>
       {children}
